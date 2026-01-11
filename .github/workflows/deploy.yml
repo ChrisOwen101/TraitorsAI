@@ -64,12 +64,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Deploy to Hetzner
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.2.4
         with:
           host: ${{ secrets.HETZNER_HOST }}
           username: ${{ secrets.HETZNER_USER }}
           password: ${{ secrets.HETZNER_PASSWORD }}
-          client_url: ${{ secrets.CLIENT_URL }}
+          port: 22
           script: |
             cd /opt/traitors-ai || mkdir -p /opt/traitors-ai && cd /opt/traitors-ai
 
@@ -89,7 +89,7 @@ jobs:
                 environment:
                   - NODE_ENV=production
                   - PORT=3000
-                  - CLIENT_URL=${{ secrets.client_url }}
+                  - CLIENT_URL=${{ secrets.CLIENT_URL }}
                 healthcheck:
                   test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
                   interval: 30s
