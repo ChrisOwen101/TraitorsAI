@@ -69,6 +69,7 @@ jobs:
           host: ${{ secrets.HETZNER_HOST }}
           username: ${{ secrets.HETZNER_USER }}
           password: ${{ secrets.HETZNER_PASSWORD }}
+          client_url: ${{ secrets.CLIENT_URL }}
           script: |
             cd /opt/traitors-ai || mkdir -p /opt/traitors-ai && cd /opt/traitors-ai
 
@@ -88,7 +89,7 @@ jobs:
                 environment:
                   - NODE_ENV=production
                   - PORT=3000
-                  - CLIENT_URL=https://37.27.35.86:5173
+                  - CLIENT_URL=${{ secrets.client_url }}
                 healthcheck:
                   test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
                   interval: 30s

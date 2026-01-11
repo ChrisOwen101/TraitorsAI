@@ -42,25 +42,25 @@ export function App(): JSX.Element {
             if (data.roundEndsAt) setRoundEndsAt(new Date(data.roundEndsAt))
         })
 
-        socketService.on("player:joined", (data) => {
+        socketService.on("player:joined", (data: { playerId: string; playerName: string }) => {
             console.log("Player joined:", data.playerName)
         })
 
-        socketService.on("player:ready", (data) => {
+        socketService.on("player:ready", (data: { playerId: string; isReady: boolean }) => {
             console.log("Player ready status changed:", data)
         })
 
-        socketService.on("chat:message", (data) => {
+        socketService.on("chat:message", (data: ChatMessageData) => {
             setChatMessages(prev => [...prev, data])
         })
 
-        socketService.on("round:started", (data) => {
+        socketService.on("round:started", (data: { roundNumber: number; endsAt: string }) => {
             setRoundEndsAt(new Date(data.endsAt))
             setHasVoted(false)
             setSelectedVote(null)
         })
 
-        socketService.on("round:ended", (data) => {
+        socketService.on("round:ended", (data: { eliminatedPlayerId: string | null; eliminatedPlayerName: string | null }) => {
             if (data.eliminatedPlayerName) {
                 setChatMessages(prev => [...prev, {
                     id: `system-${Date.now()}`,
@@ -80,7 +80,7 @@ export function App(): JSX.Element {
             }
         })
 
-        socketService.on("game:phase-changed", (data) => {
+        socketService.on("game:phase-changed", (data: { phase: GamePhase }) => {
             setGamePhase(data.phase)
             if (data.phase === "voting") {
                 setChatMessages(prev => [...prev, {
@@ -93,7 +93,7 @@ export function App(): JSX.Element {
             }
         })
 
-        socketService.on("game:over", (data) => {
+        socketService.on("game:over", (data: { winners: string[]; winningTeam: PlayerRole }) => {
             setGameOver(true)
             setWinningTeam(data.winningTeam)
         })
@@ -132,7 +132,7 @@ export function App(): JSX.Element {
     }, [chatMessages])
 
     const handleCreateGame = () => {
-        socketService.emit("game:create", (response) => {
+        socketService.emit("game:create", (response: { success: boolean; gameId?: string; playerId?: string; playerName?: string; error?: string }) => {
             if (response.success && response.gameId && response.playerId && response.playerName) {
                 setGameId(response.gameId)
                 setPlayerId(response.playerId)
@@ -146,7 +146,7 @@ export function App(): JSX.Element {
     const handleJoinGame = () => {
         if (!joinGameId.trim()) return
 
-        socketService.emit("game:join", { gameId: joinGameId.trim() }, (response) => {
+        socketService.emit("game:join", { gameId: joinGameId.trim() }, (response: { success: boolean; playerId?: string; playerName?: string; gameId?: string; error?: string }) => {
             if (response.success && response.playerId && response.playerName) {
                 setGameId(joinGameId.trim())
                 setPlayerId(response.playerId)
@@ -166,7 +166,7 @@ export function App(): JSX.Element {
 
     const handleStartGame = () => {
         if (!gameId) return
-        socketService.emit("game:start", { gameId }, (response) => {
+        socketService.emit("game:start", { gameId }, (response: { success: boolean; error?: string }) => {
             if (!response.success) {
                 alert("Failed to start game: " + (response.error ?? "Unknown error"))
             }
@@ -184,7 +184,7 @@ export function App(): JSX.Element {
     const handleVote = (targetId: string) => {
         if (!gameId || hasVoted) return
 
-        socketService.emit("vote:cast", { gameId, targetPlayerId: targetId }, (response) => {
+        socketService.emit("vote:cast", { gameId, targetPlayerId: targetId }, (response: { success: boolean; error?: string }) => {
             if (response.success) {
                 setHasVoted(true)
                 setSelectedVote(targetId)

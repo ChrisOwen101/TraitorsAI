@@ -48,14 +48,14 @@ class SocketService {
      * });
      */
     on<T extends keyof ServerToClientEvents>(event: T, listener: ServerToClientEvents[T]): void {
-        this.socket?.on(event, listener as never)
+        this.socket?.on(event as any, listener as any)
     }
 
     /**
      * Stop listening for a specific event.
      */
     off<T extends keyof ServerToClientEvents>(event: T): void {
-        this.socket?.off(event)
+        this.socket?.off(event as any)
     }
 
     /**
@@ -67,7 +67,7 @@ class SocketService {
      * });
      */
     emit<T extends keyof ClientToServerEvents>(event: T, ...args: Parameters<ClientToServerEvents[T]>): void {
-        this.socket?.emit(event, ...args)
+        this.socket?.emit(event as any, ...args as any)
     }
 
     /**
@@ -81,7 +81,7 @@ class SocketService {
      * Setup error handlers for socket events.
      */
     private setupErrorHandlers(): void {
-        this.on("error", (data) => {
+        this.on("error", (data: { message: string; code: string }) => {
             console.error("Socket error:", data)
         })
 
