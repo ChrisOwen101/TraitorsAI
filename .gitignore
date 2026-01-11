@@ -1,6 +1,41 @@
-.next
-node_modules
+node_modules/
+dist/
+build/
 *.log
 .env.local
+.env.*.local
 .DS_Store
-dist
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.sublime-workspace
+*.sublime-project
+
+# OS files
+Thumbs.db
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Dependencies
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+
+# Development
+.cache/
+tmp/
+temp/
+
+# Production
+.next/
+out/
+
+.env
