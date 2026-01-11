@@ -75,9 +75,8 @@ jobs:
             mkdir -p /opt/traitors-ai
             cd /opt/traitors-ai
 
-            # Create docker-compose.prod.yml if it doesn't exist
-            if [ ! -f docker-compose.prod.yml ]; then
-              cat > docker-compose.prod.yml << 'EOF'
+            # Create/update docker-compose.prod.yml
+            cat > docker-compose.prod.yml << 'EOF'
             services:
               app:
                 image: ghcr.io/chrisowen101/traitorsai:latest
@@ -97,7 +96,6 @@ jobs:
                   retries: 3
                   start_period: 5s
             EOF
-            fi
 
             # Login to GitHub Container Registry
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
