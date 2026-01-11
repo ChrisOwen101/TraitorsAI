@@ -15,7 +15,7 @@ export function App(): JSX.Element {
     const [playersReady, setPlayersReady] = useState(0)
     const [isReady, setIsReady] = useState(false)
     const [myRole, setMyRole] = useState<PlayerRole | null>(null)
-    const [knownRoles, setKnownRoles] = useState<{ playerId: string; playerName: string; role: PlayerRole }[]>([])
+    const [knownRoles, setKnownRoles] = useState<{ playerId: string; playerName: string; role: PlayerRole | null }[]>([])
     const [chatMessages, setChatMessages] = useState<ChatMessageData[]>([])
     const [messageInput, setMessageInput] = useState("")
     const [roundEndsAt, setRoundEndsAt] = useState<Date | null>(null)
@@ -404,20 +404,24 @@ export function App(): JSX.Element {
 
             <main className="flex-1 p-4 overflow-hidden">
                 <div className="max-w-7xl mx-auto h-full grid grid-cols-1 lg:grid-cols-3 gap-4">
-                    {/* Known Roles Panel */}
-                    {myRole === PlayerRole.Traitor && knownRoles.length > 0 && (
+                    {/* Players/Roles Panel */}
+                    {knownRoles.length > 0 && (
                         <aside className="bg-slate-800 rounded-lg p-6 overflow-y-auto">
-                            <h3 className="text-xl font-bold text-traitor mb-4">Known Roles</h3>
+                            <h3 className="text-xl font-bold text-traitor mb-4">
+                                {myRole === PlayerRole.Traitor ? "Known Roles" : "Players"}
+                            </h3>
                             <div className="space-y-2">
-                                {knownRoles.map(kr => (
+                                {knownRoles.filter(kr => kr.playerId !== playerId).map(kr => (
                                     <div
                                         key={kr.playerId}
                                         className={`p-3 rounded-lg border-l-4 ${kr.role === PlayerRole.Traitor
                                             ? "bg-traitor/10 border-traitor text-traitor"
-                                            : "bg-faithful/10 border-faithful text-faithful"
+                                            : kr.role === PlayerRole.Faithful
+                                                ? "bg-faithful/10 border-faithful text-faithful"
+                                                : "bg-slate-700 border-slate-500 text-slate-300"
                                             }`}
                                     >
-                                        <strong>{kr.playerName}</strong> - {kr.role}
+                                        <strong>{kr.playerName}</strong>{kr.role && ` - ${kr.role}`}
                                     </div>
                                 ))}
                             </div>
@@ -425,7 +429,7 @@ export function App(): JSX.Element {
                     )}
 
                     {/* Chat Panel */}
-                    <section className={`bg-slate-800 rounded-lg p-6 flex flex-col min-h-0 ${myRole === PlayerRole.Traitor && knownRoles.length > 0 ? "lg:col-span-1" : "lg:col-span-2"
+                    <section className={`bg-slate-800 rounded-lg p-6 flex flex-col min-h-0 ${knownRoles.length > 0 ? "lg:col-span-1" : "lg:col-span-2"
                         }`}>
                         <h3 className="text-xl font-bold text-traitor mb-4">Chat</h3>
                         <div className="flex-1 overflow-y-auto space-y-2 mb-4 pr-2">

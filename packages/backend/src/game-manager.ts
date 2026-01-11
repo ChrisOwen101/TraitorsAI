@@ -441,7 +441,7 @@ class GameManager {
      * Start AI chat timer to periodically generate messages.
      */
     private startAIChatTimer(gameId: string): void {
-        const timer = setInterval(() => {
+        const timer = setInterval(async () => {
             const game = this.games.get(gameId)
             if (!game || game.phase === GamePhase.GameOver) {
                 this.clearGameTimers(gameId)
@@ -459,7 +459,7 @@ class GameManager {
             for (const aiPlayer of aiPlayers) {
                 const ai = this.aiPlayers.get(aiPlayer.id)
                 if (ai) {
-                    const message = ai.generateChatMessage(aiPlayer, game)
+                    const message = await ai.generateChatMessage(aiPlayer, game)
                     if (message) {
                         const chatMessage = this.addChatMessage(gameId, aiPlayer.id, message)
                         if (chatMessage && this.eventEmitter) {
@@ -520,9 +520,9 @@ class GameManager {
 
     /**
      * Get roles that a player should know about.
-     * Traitors know all roles, Faithful only know their own.
+     * Traitors know all roles, Faithful know all player names but not roles.
      */
-    getKnownRoles(gameId: string, playerId: string): { playerId: string; playerName: string; role: PlayerRole }[] {
+    getKnownRoles(gameId: string, playerId: string): { playerId: string; playerName: string; role: PlayerRole | null }[] {
         const game = this.games.get(gameId)
         const player = this.getPlayer(gameId, playerId)
 
@@ -541,8 +541,14 @@ class GameManager {
                 }))
         }
 
-        // Faithful only know their own role
-        return []
+        // Faithful know all player names but not their roles (except eliminated players)
+        return game.players
+            .filter(p => !p.isEliminated)
+            .map(p => ({
+                playerId: p.id,
+                playerName: p.name,
+                role: null,
+            }))
     }
 
     /**

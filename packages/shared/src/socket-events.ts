@@ -127,7 +127,7 @@ export interface GameStateUpdate {
     playerCount: number
     playersReady?: number
     myRole?: PlayerRole | null
-    knownRoles?: { playerId: string; playerName: string; role: PlayerRole }[]
+    knownRoles?: { playerId: string; playerName: string; role: PlayerRole | null }[]
     currentRoundNumber?: number
     roundEndsAt?: string
     votesReceived?: number

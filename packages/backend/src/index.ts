@@ -2,17 +2,22 @@
  * Main entry point for the Express + Socket.io backend server.
  */
 
+import dotenv from "dotenv"
+import { fileURLToPath } from "url"
+import { dirname, join } from "path"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+// Load .env from monorepo root (3 levels up from dist/index.js)
+dotenv.config({ path: join(__dirname, "../../../.env") })
+
 import express, { type Express, type Request, type Response, type NextFunction } from "express"
 import { createServer } from "http"
 import { Server } from "socket.io"
 import cors from "cors"
-import { fileURLToPath } from "url"
-import { dirname, join } from "path"
 import type { ClientToServerEvents, ServerToClientEvents } from "@traitors-ai/shared"
 import { gameManager } from "./game-manager.js"
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
 
 const app: Express = express()
 const port = process.env.PORT ?? 3000
