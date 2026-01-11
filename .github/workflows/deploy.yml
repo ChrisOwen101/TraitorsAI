@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: chrisowen101/traitorsai
 
 jobs:
   build:
@@ -78,11 +78,9 @@ jobs:
             # Create docker-compose.prod.yml if it doesn't exist
             if [ ! -f docker-compose.prod.yml ]; then
               cat > docker-compose.prod.yml << 'EOF'
-            version: '3.8'
-
             services:
               app:
-                image: ghcr.io/${{ github.repository }}:latest
+                image: ghcr.io/chrisowen101/traitorsai:latest
                 container_name: traitors-ai
                 restart: always
                 ports:
