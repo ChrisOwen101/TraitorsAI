@@ -1,17 +1,12 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "composite": true,
     "jsx": "react-jsx",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "outDir": "./dist",
     "rootDir": "./src",
-    "noEmit": true,
-    "paths": {
-      "@traitors-ai/shared": ["../shared/dist/index.d.ts"]
-    }
+    "noEmit": true
   },
   "include": ["src/**/*"],
-  "exclude": ["dist", "build", "node_modules"],
-  "references": [{ "path": "../shared" }]
+  "exclude": ["dist", "build", "node_modules"]
 }

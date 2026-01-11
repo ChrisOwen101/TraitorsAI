@@ -24,7 +24,8 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@traitors-ai/shared": ["./packages/shared/src/index.ts"]
+      "@traitors-ai/shared": ["./packages/shared/dist/index.d.ts"],
+      "@traitors-ai/shared/*": ["./packages/shared/dist/*"]
     }
   },
   "files": [],

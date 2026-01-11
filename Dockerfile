@@ -12,8 +12,8 @@ COPY packages ./packages
 # Install dependencies
 RUN npm ci
 
-# Build all packages
-RUN npm run build
+# Clean any stale build artifacts and build all packages
+RUN rm -rf packages/*/tsconfig.tsbuildinfo packages/*/dist && npm run build
 
 # Runtime stage
 FROM node:20-alpine
